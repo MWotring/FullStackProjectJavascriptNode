@@ -1,0 +1,20 @@
+body {
+
+	text-align: center;
+	margin: auto;
+	font-family: Times New Roman;
+	width: 500px;
+
+}
+
+h1{
+	background: #B8B8B8; 	
+	padding: 1.5em 1.5em 1.5em 1.5em;
+}
+
+div{
+	background-color: #F0F0F0;
+	padding: .3125em .625em .625em;
+	border-bottom: 1px solid #ff0000;
+	border-top: 2px solid #ff0000;
+}
