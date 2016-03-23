@@ -6,6 +6,11 @@ var path = require('path');
 var ServerIP = '127.0.0.1', port = '8080';
 var mysql = require("mysql");
 var query;
+var query2;
+var student;
+var email;
+var json;
+var jsonResults = [];
 
 //create the server
 var Server = express();
@@ -29,11 +34,11 @@ Server.get('/', function(req, res) {
 	console.log(fn);
 	console.log(ln);
 	if(fn) {
-		query = 'SELECT first, last, students.email, class_name, grade FROM students JOIN studentClasses ON students.email = studentClasses.email JOIN classes ON classes.id = studentClasses.id WHERE students.first="' + fn + '";';
+		query = 'SELECT first, last, email FROM students WHERE first="' + fn + '";';
 		console.log("query: "+query);
 	}
 	else if(ln) {
-		query = 'SELECT first, last, students.email, class_name, grade FROM students JOIN studentClasses ON students.email = studentClasses.email JOIN classes ON classes.id = studentClasses.id WHERE students.last="' + ln + '";';
+		query = 'SELECT first, last, email FROM students WHERE students.last="' + ln + '";';
 		console.log("query: "+query);
 	}
 	get_json(query, res);
@@ -49,7 +54,7 @@ function get_json(query, res) {
 		port: "3306",
 		database: "student_database",
 		user: "root",
-		password: "REDACTED"
+		password: "12kgGoatB34Rdmys"
 	});
 
 	db.connect(function(err){
@@ -62,12 +67,27 @@ function get_json(query, res) {
 	
 	db.query(query, function(err, rows, fields){
 		if(err) throw err;
+
 		json = JSON.stringify(rows);
+		jsonResults.push(json);
+		student = rows[0];
+		email = student.email;
+		query2 = 'SELECT class_name, grade from studentClasses JOIN classes on studentClasses.id = classes.id WHERE email="' + email + '";';
 		
+		db.query(query2, function(err, rows, fields){
+			if(err) throw err;
+			if(rows) {
+				
+				json = json + JSON.stringify(rows);
+				
+				json = json.replace('\]\[', ', ');
+				
+			}
+			
+			console.log(json);
+			res.end(json);
+		});				
 		db.end();
-		console.log('JSON-result:', json);
-		
-		res.end(json);
 	});
 	
 };

@@ -40,33 +40,38 @@ function get_form_req(e) {
 }
 
 function process(data) {
-	console.log(data);
-	var student_obj = JSON.parse(data);
-	console.log(student_obj);
-	var name = get_full_name(student_obj);
-	var gpa = get_gpa(student_obj);
+	var student_objs = JSON.parse(data);
+	console.log(student_objs);
+	var name = get_full_name(student_objs);
+	var gpa = get_gpa(student_objs);
 	console.log(name + ' ' + gpa);
+	var email = student_objs[0].email;
+	var classes = details(student_objs);
  }
 
- function get_full_name(student_obj){
-	var full_name = student_obj.first + " " + student_obj.last;	
+ function get_full_name(student_objs){
+	var full_name = student_objs[0].first + " " + student_objs[0].last;	
+	console.log(full_name);
 	return full_name;
 };
 
-function get_gpa(student_obj){
-	var leng = student_obj.length;
-	var gpa = 0;
-	for (i = 0; i < leng; i++) {
-		gpa += student_obj.grade;
+function get_gpa(student_objs){
+	var leng = student_objs.length;
+	var gpa = 0.0;
+	for (var i = 1; i < leng; i++) {
+		var temp = student_objs[i].grade;
+		gpa += parseFloat(temp);
+		console.log(temp);
 	}
-	return (gpa / leng);
+	return (gpa / (leng - 1));
 };
 
-function details() {
-	var email = student_object.students.email;
-	var leng = student_obj.studentClasses.length;
-	var classes;
-	for (i = 0; i < leng; i++) {
-		classes [ "student_obj.classes[student_obj.studentClasses[i]]" ] = "student_obj.studentClasses.id[i]";
+function details(student_objs) {
+	for (var i = 1; i < leng; i++) {
+		var leng = student_objs.length;
+		var classes = [];
+		var classString = student_objs[i].class_name + ': ' + student_objs[i].grade;
+		classes.push(classString);
 	}
+	return classes;
 };
