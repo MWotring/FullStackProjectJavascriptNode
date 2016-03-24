@@ -9,17 +9,12 @@ function get_form_req(e) {
 	if (e.preventDefault) e.preventDefault();
 	var first = document.forms["simpleForm"]["first_name"].value;
 	var last = document.forms["simpleForm"]["last_name"].value;
-	console.log(first);
-	console.log(last);
 	
 	if( (first == null || first == "") && (last == null || last == "") ) {
 		alert("At least one of first_name or last_name must be filled out.");
 		return false;
 	}
-	else {
-		
-		console.log("Javascript captured get ", first, last);
-		
+	else {		
 		var get_url = 'http://localhost:8080/?first=' + first + '&last=' + last;
 		
 		$.ajax({
@@ -41,17 +36,17 @@ function get_form_req(e) {
 
 function process(data) {
 	var student_objs = JSON.parse(data);
-	console.log(student_objs);
 	var name = get_full_name(student_objs);
 	var gpa = get_gpa(student_objs);
-	console.log(name + ' ' + gpa);
 	var email = student_objs[0].email;
 	var classes = details(student_objs);
+	
+	var newHTML = "<p><b>" + name + "</b></p><p>GPA: " + gpa.toFixed(2) + "</p><details> <p>" + email + "</p><p> <b>Classes Taken : Grade Earned</b></p><p>" + classes + " </details>";
+	document.getElementById("replaceable").innerHTML = newHTML;
  }
 
  function get_full_name(student_objs){
 	var full_name = student_objs[0].first + " " + student_objs[0].last;	
-	console.log(full_name);
 	return full_name;
 };
 
@@ -67,11 +62,10 @@ function get_gpa(student_objs){
 };
 
 function details(student_objs) {
-	for (var i = 1; i < leng; i++) {
-		var leng = student_objs.length;
-		var classes = [];
-		var classString = student_objs[i].class_name + ': ' + student_objs[i].grade;
-		classes.push(classString);
+	var leng = student_objs.length;
+	var classString = '';
+	for (var i = 1; i < leng; i++) {			
+		classString += "<p>" + student_objs[i].class_name + ': ' + student_objs[i].grade + "</p>";
 	}
-	return classes;
+	return classString;
 };

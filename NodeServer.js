@@ -26,13 +26,10 @@ Server.get('/', function(req, res) {
 	
 	var url_parts = url.parse(req.url, true);
 	var url_query = url_parts.query;
-	console.log(url_query);
-	console.log(url_query.first);
 
 	var fn = url_query.first;
 	var ln = url_query.last;
-	console.log(fn);
-	console.log(ln);
+	
 	if(fn) {
 		query = 'SELECT first, last, email FROM students WHERE first="' + fn + '";';
 		console.log("query: "+query);
@@ -41,20 +38,17 @@ Server.get('/', function(req, res) {
 		query = 'SELECT first, last, email FROM students WHERE students.last="' + ln + '";';
 		console.log("query: "+query);
 	}
-	get_json(query, res);
-	
-	
-	
+	get_json(query, res);	
 });
 
 function get_json(query, res) { 	
-	//create connection to db
+
 	var db = mysql.createConnection({
 		host: "localhost",
 		port: "3306",
 		database: "student_database",
 		user: "root",
-		password: "12kgGoatB34Rdmys"
+		password: "REDACTED"
 	});
 
 	db.connect(function(err){
@@ -67,7 +61,7 @@ function get_json(query, res) {
 	
 	db.query(query, function(err, rows, fields){
 		if(err) throw err;
-
+		
 		json = JSON.stringify(rows);
 		jsonResults.push(json);
 		student = rows[0];
@@ -77,17 +71,11 @@ function get_json(query, res) {
 		db.query(query2, function(err, rows, fields){
 			if(err) throw err;
 			if(rows) {
-				
 				json = json + JSON.stringify(rows);
-				
-				json = json.replace('\]\[', ', ');
-				
+				json = json.replace('\]\[', ', ');				
 			}
-			
-			console.log(json);
-			res.end(json);
+		res.end(json);
 		});				
 		db.end();
-	});
-	
+	});	
 };
